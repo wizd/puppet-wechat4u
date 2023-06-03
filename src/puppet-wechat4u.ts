@@ -658,21 +658,22 @@ export class PuppetWechat4u extends PUPPET.Puppet {
         /**
          * 语音消息
          */
-        const audioFileBox = FileBox.fromStream(
-          (await this.wechat4u.getVoice(rawPayload.MsgId)).data,
-          `message-${id}-audio.sil`,
+        const resp = await this.wechat4u.getVoice(rawPayload.MsgId);
+        const audioFileBox = FileBox.fromBuffer(
+          resp.data,
+          `message-${id}-audio.mp3`,
         )
-        const options = {
-          attrNodeName: '$',
-          attributeNamePrefix: '',
-          ignoreAttributes: false,
-        }
+        // const options = {
+        //   attrNodeName: '$',
+        //   attributeNamePrefix: '',
+        //   ignoreAttributes: false,
+        // }
 
-        const msgXmlObj = XMLParser.parse(rawPayload.Content, options)
-        const voiceLength = parseInt(msgXmlObj.msg.voicemsg.$.voicelength, 10)
-        audioFileBox.metadata = {
-          voiceLength,
-        }
+        // const msgXmlObj = XMLParser.parse(rawPayload.Content, options)
+        // const voiceLength = parseInt(msgXmlObj.msg.voicemsg.$.voicelength, 10)
+        // audioFileBox.metadata = {
+        //   voiceLength,
+        // }
         // console.log('语音消息，保存到本地')
         return audioFileBox
       }
